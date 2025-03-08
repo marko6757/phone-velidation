@@ -253,8 +253,6 @@ const countries = [
     { name: "Zimbabwe", code: "ZW", phone: 263 }
 ];
 
-// const { sendVerification } = require('.server.js');
-
 // Update query selectors to target elements inside the .phone-input container
 const select_box = document.querySelector('.phone-input .options');
 const search_box = document.querySelector('.phone-input .search-box');
@@ -362,7 +360,34 @@ verificationInput.addEventListener('input', function (e) {
     this.value = digits;
 });
 
-submitBtn.addEventListener('click', function () {
+const sendVerification = async (phoneNumber) => {
+    const result = await fetch('https://twilio-ten-mauve.vercel.app/verify/start', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phoneNumber })
+    })
+    if (result.ok) {
+        console.log('Verification code sent');
+    } else {
+        console.error('Failed to send verification code');
+    }
+}
+
+const checkCode = async(phoneNumber, code) => {
+    const result = await fetch('https://twilio-ten-mauve.vercel.app/verify/check', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phoneNumber, code })
+    })
+    if (result.ok) {
+        console.log('Verification code correct');
+    } else {
+        verificationInputDiv.classList.add('error');
+        console.error('Verification code incorrect');
+    }
+}
+
+submitBtn.addEventListener('click', async function () {
     if (submit_stage === 0) {
         const prefix = input_box.getAttribute('data-prefix');
         let phoneNumber = input_box.value.slice(prefix.length);
@@ -372,20 +397,16 @@ submitBtn.addEventListener('click', function () {
             phoneInput.classList.remove('show');
             phoneInput.classList.add('hide');
             verificationInputDiv.classList.add('show');
-            sendVerification(phoneNumber).then(result => {
-                if (result) {
-                    console.log('SMS verification initiated successfully.');
-                } else {
-                    console.log('Failed to initiate SMS verification.');
-                }
-            });
+            await sendVerification(input_box.value);
         } else if (!phoneInput.classList.contains('error')) {
             phoneInput.classList.add('error');
         }
     } else {
+        const phoneNumber = input_box.value;
         console.log('pass');
         if (verificationInput.value.length === 6) {
             console.log('pass1');
+            await checkCode(phoneNumber, verificationInput.value);
         } else if (!verificationInputDiv.classList.contains('error')) {
             console.log('pass2');
             verificationInputDiv.classList.add('error');
