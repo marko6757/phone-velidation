@@ -6,12 +6,12 @@ const app = express();
 app.use(bodyParser.json());
 
 // Twilio Credentials (store these securely in environment variables in production)
-const accountSid = '';
-const authToken = '';  // Replace with your actual auth token
+const accountSid = 'ACecbea0a4ddeabe03b4c2953e0e1fd2ac';
+const authToken = 'f03c7bcde063c9fa9f6dfdf241929426';  // Replace with your actual auth token
 const client = twilio(accountSid, authToken);
 
 // Your Twilio Verify Service SID
-const verifyServiceSid = '';
+const verifyServiceSid = 'VA77f446a158dc970be2156e49b87fa925';
 
 // Endpoint to send a verification code via SMS
 app.post('/send-verification', (req, res) => {
