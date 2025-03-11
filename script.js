@@ -19,6 +19,7 @@ const triviaBackgroundVideo = document.getElementById("triviaBackgroundVideo");
 
 const finalScreen = document.getElementById("finalScreen");
 const submitBtn = document.getElementById("submitBtn");
+const privacyBtn = document.getElementById("privacyBtn");
 const confetti = document.getElementById("confetti");
 const phoneInput = document.querySelector(".phone-input");
 
@@ -50,6 +51,7 @@ const cButton = document.getElementById("cButton");
 const dButton = document.getElementById("dButton");
 
 const bad = document.getElementById("bad");
+const better = document.getElementById("better");
 const good = document.getElementById("good");
 const best = document.getElementById("best");
 const bestLoop = document.getElementById("bestLoop");
@@ -112,17 +114,9 @@ aButton.addEventListener("click", () => {
         } else if (stage === 2) {
             stage++;
             Q2_entrance.style.display = "none";
-            good.style.display = "none";
+            better.style.display = "none";
             playVideoOnDemand(Q2_A);
-            playVideoOnDemand(best);
-            best.addEventListener("timeupdate", function onUpdate() {
-                if (this.currentTime >= this.duration - 0.3) {
-                    best.style.display = "none";
-                    bestLoop.setAttribute("loop", "");
-                    playVideoOnDemand(bestLoop);
-                    best.removeEventListener("timeupdate", onUpdate);
-                }
-            });
+            playVideoOnDemand(good);
             Q2_A.addEventListener("timeupdate", function onUpdate() {
                 if (this.currentTime >= this.duration - 0.3) {
                     Q2_A.style.display = "none";
@@ -134,7 +128,17 @@ aButton.addEventListener("click", () => {
             });
         } else if (stage === 3) {
             Q3_entrance.style.display = "none";
+            good.style.display = "none";
             playVideoOnDemand(Q3_A);
+            playVideoOnDemand(best);
+            best.addEventListener("timeupdate", function onUpdate() {
+                if (this.currentTime >= this.duration - 0.3) {
+                    best.style.display = "none";
+                    bestLoop.setAttribute("loop", "");
+                    playVideoOnDemand(bestLoop);
+                    best.removeEventListener("timeupdate", onUpdate);
+                }
+            });
             Q3_A.addEventListener("timeupdate", function onUpdate() {
                 if (this.currentTime >= this.duration - 0.3) {
                     triviaBtnWrapper.style.display = "none";
@@ -232,7 +236,7 @@ dButton.addEventListener("click", () => {
             Q1_entrance.style.display = "none";
             bad.style.display = "none";
             playVideoOnDemand(Q1_D);
-            playVideoOnDemand(good);
+            playVideoOnDemand(better);
             Q1_D.addEventListener("timeupdate", function onUpdate() {
                 if (this.currentTime >= this.duration - 0.3) {
                     Q1_D.style.display = "none";

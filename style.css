@@ -147,6 +147,17 @@ img {
     cursor: pointer;
 }
 
+.privacy-btn {
+    position: absolute;
+    bottom: 46.6%;
+    left: 50%;
+    width: 18%;
+    height: 1.5%;
+    opacity: 0;
+    z-index: 100;
+    cursor: pointer;
+}
+
 .trivia-btn-wrapper {
     position: absolute;
     top: 67.5%;

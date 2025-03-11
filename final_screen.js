@@ -266,6 +266,7 @@ finalScreen.addEventListener("timeupdate", function onUpdate() {
     if (this.currentTime >= this.duration - 0.3) {
         phoneInput.classList.add('show');
         submitBtn.style.display = "block";
+        privacyBtn.style.display = "block";
         finalScreen.removeEventListener("timeupdate", onUpdate);
     }
 });
@@ -368,8 +369,10 @@ const sendVerification = async (phoneNumber) => {
     })
     if (result.ok) {
         console.log('Verification code sent');
+        return true;
     } else {
         console.error('Failed to send verification code');
+        return false;
     }
 }
 
@@ -381,34 +384,45 @@ const checkCode = async(phoneNumber, code) => {
     })
     if (result.ok) {
         console.log('Verification code correct');
+        return true;
     } else {
-        verificationInputDiv.classList.add('error');
         console.error('Verification code incorrect');
+        return false;
     }
 }
+
+privacyBtn.addEventListener('click', async function () {
+    
+});
 
 submitBtn.addEventListener('click', async function () {
     if (submit_stage === 0) {
         const prefix = input_box.getAttribute('data-prefix');
         let phoneNumber = input_box.value.slice(prefix.length);
-        console.log(phoneNumber);
         if (isValidPhoneNumber(phoneNumber)) {
-            submit_stage = 1;
-            phoneInput.classList.remove('show');
-            phoneInput.classList.add('hide');
-            verificationInputDiv.classList.add('show');
-            await sendVerification(input_box.value);
-        } else if (!phoneInput.classList.contains('error')) {
+            let result = await sendVerification(input_box.value);
+            if (result) {
+                submit_stage = 1;
+                phoneInput.classList.remove('show');
+                phoneInput.classList.add('hide');
+                verificationInputDiv.classList.add('show');
+            }
+            else {
+                phoneInput.classList.add('error');
+            }
+        } else {
             phoneInput.classList.add('error');
         }
     } else {
         const phoneNumber = input_box.value;
-        console.log('pass');
         if (verificationInput.value.length === 6) {
-            console.log('pass1');
-            await checkCode(phoneNumber, verificationInput.value);
-        } else if (!verificationInputDiv.classList.contains('error')) {
-            console.log('pass2');
+            let result = await checkCode(phoneNumber, verificationInput.value);
+            if (result) {
+
+            } else {
+                verificationInputDiv.classList.add('error');
+            }
+        } else {
             verificationInputDiv.classList.add('error');
         }
     }
