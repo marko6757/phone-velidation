@@ -361,7 +361,7 @@ verificationInput.addEventListener('input', function (e) {
 });
 
 const sendVerification = async (phoneNumber) => {
-    const result = await fetch('https://twilio-ten-mauve.vercel.app/verify/start', {
+    const result = await fetch('https://quiiiz-three.vercel.app/verify/start', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ phoneNumber })
@@ -374,7 +374,7 @@ const sendVerification = async (phoneNumber) => {
 }
 
 const checkCode = async(phoneNumber, code) => {
-    const result = await fetch('https://twilio-ten-mauve.vercel.app/verify/check', {
+    const result = await fetch('https://quiiiz-three.vercel.app/verify/check', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ phoneNumber, code })
