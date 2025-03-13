@@ -391,10 +391,6 @@ const checkCode = async(phoneNumber, code) => {
     }
 }
 
-privacyBtn.addEventListener('click', async function () {
-    
-});
-
 submitBtn.addEventListener('click', async function () {
     if (submit_stage === 0) {
         const prefix = input_box.getAttribute('data-prefix');
@@ -418,7 +414,12 @@ submitBtn.addEventListener('click', async function () {
         if (verificationInput.value.length === 6) {
             let result = await checkCode(phoneNumber, verificationInput.value);
             if (result) {
-
+                confetti.style.display = "none";
+                inBtn.style.display = "block";
+                verificationInput.value = "";
+                verificationInputDiv.classList.add('locked');
+                verificationInput.disabled = true;
+                submitBtn.style.display = "none";
             } else {
                 verificationInputDiv.classList.add('error');
             }

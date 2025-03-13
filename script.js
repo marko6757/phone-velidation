@@ -19,6 +19,7 @@ const triviaBackgroundVideo = document.getElementById("triviaBackgroundVideo");
 
 const finalScreen = document.getElementById("finalScreen");
 const submitBtn = document.getElementById("submitBtn");
+const inBtn = document.getElementById("inBtn");
 const privacyBtn = document.getElementById("privacyBtn");
 const confetti = document.getElementById("confetti");
 const phoneInput = document.querySelector(".phone-input");

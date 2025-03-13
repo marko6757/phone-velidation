@@ -184,6 +184,16 @@ img {
     border: 1px solid red;
 }
 
+#inBtn {
+    position: fixed;
+    bottom: 25.2%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: auto;
+    height: 9.5%;
+    z-index: 100;
+}
+
 /* --- Telephone Input Styles --- */
 .phone-input {
     position: absolute;
@@ -414,7 +424,6 @@ img {
     justify-content: center;
     align-items: center;
     box-sizing: border-box;
-
 }
 
 .verification-input input {
@@ -424,6 +433,7 @@ img {
     border: none;
     outline: none;
     font-size: 100%;
+    transition: all;
 }
 
 .verification-input input:focus {
@@ -444,4 +454,9 @@ img {
 
 .error {
     outline: 3px solid rgb(255, 73, 73);
+}
+
+.locked {
+    background-color: rgba(100, 100, 100, 0.452);
+    pointer-events: none;
 }
