@@ -11,9 +11,6 @@ document.querySelectorAll("video").forEach(video => {
 
 // Grab essential elements.
 const lobbyVideo = document.getElementById("lobbyVideo");
-const playButton = document.getElementById("playButton");
-const fingerLoop = document.getElementById("fingerLoop");
-const lobbyFinalFrame = document.getElementById("lobbyFinalFrame");
 
 const triviaBackgroundVideo = document.getElementById("triviaBackgroundVideo");
 
@@ -65,30 +62,15 @@ const third = document.getElementById("third");
 displayStartScreen();
 
 lobbyVideo.addEventListener("timeupdate", function onUpdate() {
-    if (this.currentTime >= this.duration - 0.2) {
-        lobbyVideo.style.display = "none";
-        lobbyFinalFrame.style.display = "block";
-        fingerLoop.style.zIndex = 20;
-        playVideoOnDemand(fingerLoop);
-        lobbyVideo.removeEventListener("timeupdate", onUpdate);
-    }
-});
-
-playButton.addEventListener("click", () => {
-    if (areAllVideosPaused()) {
+    if (this.currentTime >= this.duration - 1) {
         playLoopingMusic(0.3, 1);
+        lobbyVideo.removeEventListener("timeupdate", onUpdate);
         playVideoOnDemand(triviaBackgroundVideo);
         playVideoOnDemand(bad);
         triviaBtnWrapper.style.display = "flex";
-        let pass = false;
         triviaBackgroundVideo.addEventListener("timeupdate", function onUpdate() {
-            if (!pass && this.currentTime >= 1) {
-                lobbyFinalFrame.style.display = "none";
-                fingerLoop.style.display = "none";
-                playButton.style.display = "none";
-                pass = true;
-            }
             if (this.currentTime >= this.duration - 0.3) {
+                lobbyVideo.style.display = "none";
                 Q1_entrance.style.display = "flex";
                 first.style.display = "flex";
                 playVideoOnDemand(Q1_entrance);
@@ -284,7 +266,6 @@ finalScreen.addEventListener("timeupdate", function onUpdate() {
 function displayStartScreen() {
     lobbyVideo.style.display = "flex";
     lobbyVideo.play();
-    playButton.style.display = "block";
 }
 
 function areAllVideosPaused() {
@@ -338,8 +319,8 @@ function fadeOutLoopingMusic(fadeOutDuration = 2) {
 function hideAllVideosExceptFinal() {
     const videos = document.querySelectorAll("video");
     videos.forEach(video => {
-      if (video.id !== "finalScreen") {
-        video.style.display = "none"; // Hide all videos except the final one
-      }
+        if (video.id !== "finalScreen") {
+            video.style.display = "none"; // Hide all videos except the final one
+        }
     });
-  }
+}
