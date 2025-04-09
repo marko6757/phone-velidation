@@ -4,6 +4,8 @@ class VideoPreloader {
         this.loadedCount = 0
         this.totalVideos = 0
         this.completeCallback = null
+        this.timeoutId = null
+        this.maxWaitTime = 30000 // 30 seconds max wait time
     }
 
     findVideos() {
@@ -30,45 +32,90 @@ class VideoPreloader {
 
         console.log(`Starting to preload ${this.videos.length} videos...`)
 
-        // Set all videos to preload="auto" to force loading
-        this.videos.forEach((video, index) => {
-            video.preload = "auto"
+        // Set a timeout to prevent infinite waiting
+        this.timeoutId = setTimeout(() => {
+            console.log("Preloading timed out after 30 seconds, starting application anyway")
+            if (this.completeCallback) {
+                this.completeCallback()
+            }
+        }, this.maxWaitTime)
 
-            // Handle when video data is loaded
-            video.addEventListener("loadeddata", () => {
-                this.loadedCount++
-                const progress = Math.round((this.loadedCount / this.totalVideos) * 100)
-                console.log(
-                    `Video loaded (${this.loadedCount}/${this.totalVideos}): ${video.id || `Video ${index + 1}`} - ${progress}% complete`,
-                )
-
-                // Check if all videos are loaded
-                if (this.loadedCount === this.totalVideos) {
-                    console.log("All videos loaded successfully!")
-                    if (this.completeCallback) {
-                        this.completeCallback()
-                    }
-                }
-            })
-
-            // Handle loading errors
-            video.addEventListener("error", () => {
-                console.error(`Failed to load video: ${video.id || `Video ${index + 1}`}`)
-                this.loadedCount++
-
-                // Continue even if some videos fail to load
-                if (this.loadedCount === this.totalVideos) {
-                    console.log("Video loading completed with some errors")
-                    if (this.completeCallback) {
-                        this.completeCallback()
-                    }
-                }
-            })
-
-            // Force the browser to start loading the video
-            video.load()
-        })
+        // Load videos in sequence (works better on both mobile and desktop)
+        this.loadVideosSequentially(0)
 
         return this
+    }
+
+    loadVideosSequentially(index) {
+        // If we've loaded all videos or reached the end, we're done
+        if (index >= this.videos.length || this.loadedCount >= this.totalVideos) {
+            clearTimeout(this.timeoutId)
+            console.log("All videos loaded successfully!")
+            if (this.completeCallback) {
+                this.completeCallback()
+            }
+            return
+        }
+
+        const video = this.videos[index]
+        const videoId = video.id || `Video ${index + 1}`
+
+        // Use canplaythrough instead of loadeddata for better mobile compatibility
+        const eventHandler = () => {
+            this.loadedCount++
+            const progress = Math.round((this.loadedCount / this.totalVideos) * 100)
+            console.log(`Video loaded (${this.loadedCount}/${this.totalVideos}): ${videoId} - ${progress}% complete`)
+
+            // Remove the event listeners
+            video.removeEventListener("canplaythrough", eventHandler)
+            video.removeEventListener("error", errorHandler)
+
+            // Load the next video
+            this.loadVideosSequentially(index + 1)
+        }
+
+        const errorHandler = () => {
+            console.error(`Failed to load video: ${videoId}`)
+            this.loadedCount++
+
+            // Remove the event listeners
+            video.removeEventListener("canplaythrough", eventHandler)
+            video.removeEventListener("error", errorHandler)
+
+            // Continue with the next video even if this one failed
+            this.loadVideosSequentially(index + 1)
+        }
+
+        // Add event listeners
+        video.addEventListener("canplaythrough", eventHandler, { once: true })
+        video.addEventListener("error", errorHandler, { once: true })
+
+        // Set video attributes for loading
+        video.preload = "auto"
+        video.load()
+
+        // For iOS, we need to play and immediately pause to start loading
+        if (this.isIOS()) {
+            video.muted = true
+            const playPromise = video.play()
+            if (playPromise !== undefined) {
+                playPromise
+                    .then(() => {
+                        video.pause()
+                        video.currentTime = 0
+                    })
+                    .catch((error) => {
+                        console.error(`Error during play/pause for ${videoId}:`, error)
+                    })
+            }
+        }
+    }
+
+    isIOS() {
+        return (
+            ["iPad Simulator", "iPhone Simulator", "iPod Simulator", "iPad", "iPhone", "iPod"].includes(navigator.platform) ||
+            // iPad on iOS 13 detection
+            (navigator.userAgent.includes("Mac") && "ontouchend" in document)
+        )
     }
 }

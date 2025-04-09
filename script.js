@@ -316,10 +316,29 @@ function initializeApp() {
     }
 
     function playVideoOnDemand(videoElement) {
-        videoElement.preload = "auto";
-        videoElement.style.display = "flex";
-        videoElement.muted = false;
-        videoElement.play();
+        videoElement.preload = "auto"
+        videoElement.style.display = "flex"
+        videoElement.muted = false
+
+        // Use promise-based play for better mobile compatibility
+        const playPromise = videoElement.play()
+
+        if (playPromise !== undefined) {
+            playPromise.catch((error) => {
+                console.error("Error playing video:", error)
+                // If autoplay was prevented, try playing muted first then unmute
+                videoElement.muted = true
+                videoElement
+                    .play()
+                    .then(() => {
+                        // Try to unmute after successful play
+                        videoElement.muted = false
+                    })
+                    .catch((e) => {
+                        console.error("Still can't play video even muted:", e)
+                    })
+            })
+        }
     }
 
     function playLoopingMusic(targetVolume = 1, fadeInDuration = 2) {
