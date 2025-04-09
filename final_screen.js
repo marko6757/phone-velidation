@@ -254,6 +254,10 @@ const countries = [
 ];
 
 // Update query selectors to target elements inside the .phone-input container
+const submitBtn = document.getElementById("submitBtn");
+const inBtn = document.getElementById("inBtn");
+const privacyBtn = document.getElementById("privacyBtn");
+const phoneInput = document.querySelector(".phone-input");
 const select_box = document.querySelector('.phone-input .options');
 const search_box = document.querySelector('.phone-input .search-box');
 const input_box = document.querySelector('.phone-input input[type="tel"]');
