@@ -118,7 +118,7 @@ img {
     height: 100%;
     max-width: 100vw;
     max-height: 100vh;
-    object-fit: fill;
+    object-fit: contain;
 }
 
 .play-btn {
@@ -471,21 +471,7 @@ button {
     -ms-user-select: none;
     user-select: none;
     -webkit-tap-highlight-color: transparent;
-}
-
-/* Fix for iOS Safari full height */
-html,
-body {
-    height: 100%;
-    width: 100%;
-    overflow: hidden;
-    position: fixed;
-}
-
-/* Improve touch targets for mobile */
-.trivia-btn {
     min-height: 44px;
-    /* Minimum touch target size */
 }
 
 /* Fix for mobile viewport issues */
